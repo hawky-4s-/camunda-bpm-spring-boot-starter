@@ -1,0 +1,28 @@
+branches:
+    only:
+        - master
+
+sudo: false # enables container based builds for travis
+
+language: java
+
+jdk:
+    - oraclejdk8
+    - oraclejdk7
+
+before_script:
+    - cat /etc/mavenrc
+    - echo "MAVEN_OPTS='-Dmaven.repo.local=$HOME/.m2/repository -Xmx1024m -XX:MaxPermSize=192m'" > ~/.mavenrc
+
+script:
+    - mvn install
+
+cache:
+    directories:
+        - $HOME/.m2/repository
+
+before_cache:
+    - 'find ~/.m2/repository -type d -name \*-SNAPSHOT -exec rm -rf {} \;'
+    - 'find ~/.m2/repository -name maven-metadata-\* -exec rm {} \;'
+    - 'find ~/.m2/repository -name resolver-status.properties -exec rm {} \;'
+
